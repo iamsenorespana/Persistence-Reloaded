@@ -1,0 +1,3 @@
+#appWindow{
+	backgroundColor: '#fff';
+}
