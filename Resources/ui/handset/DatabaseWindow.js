@@ -113,7 +113,7 @@ function DatabaseWindow(){
 		//
 		//  create edit/cancel buttons for nav bar
 		//
-		if ( App.os === 'iphone' ){
+		if ( Ti.Platform.osname === 'iphone' ){
 			var edit = Titanium.UI.createButton({
 				title:'Edit'
 			});
@@ -132,9 +132,79 @@ function DatabaseWindow(){
 			});
 			
 			self.setRightNavButton(edit);
+			
+			// Add the Email Database Button
+			
+				var emailButton = Ti.UI.createButton({
+					title: 'Email DB'
+				});
+					emailButton.addEventListener('click', function(e){
+						createDBEmail();
+					});
+			
+			self.setLeftNavButton( emailButton );
+			
+			
 		}
 	
 	return self;
 };
 
 module.exports = DatabaseWindow;
+
+
+var createDBEmail = function(){
+	
+		function privateDocumentsDirectory(){
+	
+			Ti.API.info('We need to open a file object to get our directory info');
+			var testFile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory);
+			Ti.API.info('Now we remove the Documents folder reference');
+			var privateDir = testFile.nativePath.replace('Documents/','');	
+			Ti.API.info('This is our base App Directory =' + privateDir);
+			Ti.API.info('Now we add the Private Documents Directory');
+			privateDir+='Library/Private%20Documents/';
+			Ti.API.info('Our new path is ' + privateDir);
+			return privateDir;		
+		};
+		
+		var myDbName = 'todos';
+		Ti.API.info('We create a db to test our method')	
+		var testDb = Ti.Database.open(myDbName);
+		var testNativePath = testDb.getFile().nativePath;
+		Ti.API.info('Our nativePath to test against is ' + testNativePath + ' this is what we need to end up with');
+		var privateDocFolder = privateDocumentsDirectory();
+		Ti.API.info('Our Private Document Folder is ' + privateDocFolder);
+		Ti.API.info("Let's see if we can find our database");
+		var dbCheck =  Ti.Filesystem.getFile(privateDocFolder, myDbName+ '.sql');
+		Ti.API.info('Did we find it? ' + dbCheck.exists());
+		Ti.API.info('Do our file paths match? ' + (dbCheck.nativePath==testNativePath));
+		Ti.API.info('Example Finished');
+	
+	
+		// if ( Ti.App.Properties.hasProperties("foo") ){
+			// Ti.App.Properties.removeProperty("foo");
+		// }
+		
+	 	var emailDialog = Titanium.UI.createEmailDialog();
+			   if (!emailDialog.isSupported()) {
+				   	Ti.UI.createAlertDialog({
+				   		title:'Error',
+				   		message:'Email not available'
+				   	}).show();
+				   	return;
+			   }
+			   emailDialog.setSubject('SQLITE DB');
+			  // emailDialog.setToRecipients(['jamilhassanspain@gmail.com']);
+		
+				 
+				 // attach a blob
+				emailDialog.addAttachment(dbCheck);
+				emailDialog.open();
+				
+}; 
+
+
+
+
+

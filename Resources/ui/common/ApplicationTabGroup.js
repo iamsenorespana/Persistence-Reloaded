@@ -39,6 +39,7 @@ function ApplicationTabGroup(){
 		    title:'Directory',
 		    window:win4
 		});
+		
 		//
 		//  add tabs
 		//

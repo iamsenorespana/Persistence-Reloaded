@@ -24,7 +24,9 @@ function DirectoryWindow(){
 				title: 'Refresh'
 			});
 				refreshBtn.addEventListener('click', function(e){
-					alert('Feature to Refresh Directory Listing');
+//					alert('Feature to Refresh Directory Listing');
+					var refreshDir = Titanium.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory); //   + '/db/' getApplicationDataDirectory;  , 'test.json'   //Ti.Filesystem.getFile( Ti.Filesystem.applicationDataDirectory+'/database');
+					Ti.API.debug( refreshDir.getDirectoryListing() );
 				});
 				
 		self.setRightNavButton( refreshBtn );
@@ -43,39 +45,9 @@ function DirectoryWindow(){
 				// Ti.API.debug( supportDir.getDirectoryListing() );
 		
 		// create blalnk array
-		var fileData = [];
-		
-			var fileList = dir.getDirectoryListing();
-			
-			for( var i=0;i<fileList.length;i++){
-				
-				var row = Ti.UI.createTableViewRow({});
-				
-				row.fileList = fileList[i];
-				row.hasChild = true;
-				row.add(
-					Ti.UI.createLabel({
-						text: fileList[i],
-						//backgroundColor: 'red',
-						height: 'auto',
-						left: 20,
-						top: 5,
-						bottom: 10,
-						width: 250,
-						font:  {
-							fontSize: 16
-						},
-						color: '#000'
-					})
-				);
-				fileData.push(
-					row
-				);
-				
-			};
-			
 			var fileListingsTable = Ti.UI.createTableView({
-				data: fileData,
+				//data: fileData,
+				data: formatDirectoryTable( dir.getDirectoryListing() ),
 				top: 10,
 				height: 280 //'100%'
 			});	
@@ -106,17 +78,7 @@ function DirectoryWindow(){
 						})
 					);
 					
-					// var btn = Ti.UI.createButton({
-						// title: 'close',
-						// style: Ti.UI.iPhone.SystemButtonStyle.DONE,
-// 						
-					// }); //UI
-					// btn.addEventListener('click', function(){
-						// _self.close();
-					// });
-					// _self.setRightNavButton(btn);
-					
-					//alert('filename: ' + e.row.fileList );
+ 
 					var f = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, e.row.fileList );//+ '/analytics/
 					//alert(f.read());
 					
@@ -157,4 +119,36 @@ function DirectoryWindow(){
 	return self;
 };
 
+var formatDirectoryTable = function(fileArray){
+	 
+	var tableData = [];
+		
+		for( var i=0;i<fileArray.length;i++){
+				var row = Ti.UI.createTableViewRow({});
+				
+				row.fileList = fileArray[i];
+				row.hasChild = true;
+				row.add(
+					Ti.UI.createLabel({
+						text: fileArray[i],
+						//backgroundColor: 'red',
+						height: 'auto',
+						left: 20,
+						top: 5,
+						bottom: 10,
+						width: 250,
+						font:  {
+							fontSize: 16
+						},
+						color: '#000'
+					})
+				);
+				
+				tableData.push( row );			
+		}
+		
+	return tableData;
+};
 module.exports = DirectoryWindow;
+
+
