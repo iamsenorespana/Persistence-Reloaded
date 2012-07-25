@@ -20,6 +20,8 @@ function DirectoryWindow(){
 		
 		self.add( directoryLabel );
 		
+
+	if ( Ti.Platform.osname !== 'android' ){
 			var refreshBtn = Ti.UI.createButton({
 				title: 'Refresh'
 			});
@@ -30,7 +32,8 @@ function DirectoryWindow(){
 				});
 				
 		self.setRightNavButton( refreshBtn );
-		
+	}
+	
 		var directoryTable = Ti.UI.createTableView({
 			top: 30,
 			data: [{title: 'Loading directory contents'}] 
